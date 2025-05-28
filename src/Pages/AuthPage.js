@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 
-function AuthPage() {
+function AuthPage({onLoginSuccess }) {
   const [isLogin, setIsLogin] = useState(true);
   const [formData, setFormData] = useState({
     email: '',
@@ -18,9 +18,17 @@ function AuthPage() {
       body: JSON.stringify(formData)
     });
     
-    const data = await response.json();
+    const data = await response.json()
+
     if (response.ok) {
-      alert(data.message);
+      if (isLogin) {
+        localStorage.setItem('user', JSON.stringify(data.user));
+        onLoginSuccess(data.user);
+      } else {
+        alert('Registration successful! Please login.');
+        setIsLogin(true);
+        setFormData({ email: '', password: '', name: '' });
+      }
     } else {
       alert(data.message);
     }
