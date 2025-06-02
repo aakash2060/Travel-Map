@@ -46,7 +46,7 @@ function CountryMap({ country, user, onBack }) {
   const handleSave = async () => {
     try {
       setLoading(true);
-      await fetch('http://localhost:8001/api/visited-states', {
+     const response = await fetch('http://localhost:8001/api/visited-states', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -54,10 +54,17 @@ function CountryMap({ country, user, onBack }) {
           states: tempVisitedStates
         })
       });
+       if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+      
+      const data = await response.json();
+      console.log('States saved successfully:', data);
       setVisitedStates(tempVisitedStates);
       setIsEditing(false);
     } catch (error) {
       console.error('Error saving states:', error);
+      alert('Failed to save states. Please try again.'+ error.message);
     } finally {
       setLoading(false);
     }

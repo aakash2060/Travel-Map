@@ -83,6 +83,7 @@ app.get('/api/visited-states/:email', async (req, res) => {
 // Save visited states
 app.post('/api/visited-states', async (req, res) => {
   const { email, states } = req.body;
+  console.log('Saving states for:', email, states);
   
   try {
     await docClient.put({
@@ -94,22 +95,56 @@ app.post('/api/visited-states', async (req, res) => {
       }
     }).promise();
     
+    console.log('States saved successfully for:');
     res.json({ message: 'States saved successfully' });
   } catch (err) {
+    console.error('Error saving states:', err);
     res.status(500).json({ message: 'Error saving states' });
   }
 });
 
 // Add table creation for UserStates
-dynamodb.createTable({
-  TableName: 'UserStates',
-  KeySchema: [{ AttributeName: 'email', KeyType: 'HASH' }],
-  AttributeDefinitions: [{ AttributeName: 'email', AttributeType: 'S' }],
-  BillingMode: 'PAY_PER_REQUEST'
-}, (err) => {
-  if (err && err.code !== 'ResourceInUseException') {
-    console.error('Error creating UserStates table:', err);
+async function initializeDatabase() {
+  console.log('Initializing database tables...');
+  
+  try {
+    // Create Users table
+    await dynamodb.createTable({
+      TableName: 'Users',
+      KeySchema: [{ AttributeName: 'email', KeyType: 'HASH' }],
+      AttributeDefinitions: [{ AttributeName: 'email', AttributeType: 'S' }],
+      BillingMode: 'PAY_PER_REQUEST'
+    }).promise();
+    console.log('Users table created');
+  } catch (err) {
+    if (err.code === 'ResourceInUseException') {
+      console.log('Users table already exists');
+    } else {
+      console.error('Error creating Users table:', err);
+    }
   }
-});
 
-app.listen(8001, () => console.log('Server running on port 8001'));
+  try {
+    // Create UserStates table
+    await dynamodb.createTable({
+      TableName: 'UserStates',
+      KeySchema: [{ AttributeName: 'email', KeyType: 'HASH' }],
+      AttributeDefinitions: [{ AttributeName: 'email', AttributeType: 'S' }],
+      BillingMode: 'PAY_PER_REQUEST'
+    }).promise();
+    console.log('UserStates table created');
+  } catch (err) {
+    if (err.code === 'ResourceInUseException') {
+      console.log('UserStates table already exists');
+    } else {
+      console.error('Error creating UserStates table:', err);
+    }
+  }
+}
+
+// Initialize database before starting server
+initializeDatabase().then(() => {
+  app.listen(8001, () => console.log('Server running on port 8001'));
+}).catch(err => {
+  console.error('Failed to initialize database:', err);
+});
