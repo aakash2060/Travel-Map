@@ -18,6 +18,25 @@ AWS.config.update({
 const dynamodb = new AWS.DynamoDB();
 const docClient = new AWS.DynamoDB.DocumentClient();
 
+//  wait for DynamoDB function
+const waitForDynamoDB = async () => {
+  console.log('Waiting for DynamoDB to be ready...');
+  let retries = 30;
+  
+  while (retries > 0) {
+    try {
+      await dynamodb.listTables().promise();
+      console.log('DynamoDB is ready!');
+      return true;
+    } catch (err) {
+      console.log(`Waiting for DynamoDB... (${retries} retries left)`);
+      retries--;
+      await new Promise(resolve => setTimeout(resolve, 2000));
+    }
+  }
+  throw new Error('DynamoDB failed to start');
+};
+
 // Create table on startup
 dynamodb.createTable({
   TableName: 'Users',
@@ -106,6 +125,8 @@ app.post('/api/visited-states', async (req, res) => {
 // Add table creation for UserStates
 async function initializeDatabase() {
   console.log('Initializing database tables...');
+
+   await waitForDynamoDB();
   
   try {
     // Create Users table
@@ -144,7 +165,7 @@ async function initializeDatabase() {
 
 // Initialize database before starting server
 initializeDatabase().then(() => {
-  app.listen(8001, () => console.log('Server running on port 8001'));
+  app.listen(8001, '0.0.0.0', () => console.log('Server running on port 8001'));
 }).catch(err => {
   console.error('Failed to initialize database:', err);
 });
