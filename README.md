@@ -3,13 +3,8 @@
 1> First clone the app to a directory
 2> For frontend:  Go inside Travel Map directory and in command line enter this command to install all the dependencies: ``` npm install --legacy-peer-deps ```
 3> For Backend: 
-a. Go inside the Backend folder in Travel Map directory, add .env file with following key value pairs:
-```
-DYNAMODB_ENDPOINT=http://localhost:8000
-DYNAMODB_REGION=local
-AWS_ACCESS_KEY_ID=dummy
-AWS_SECRET_ACCESS_KEY=dummy
-```
+a. Go inside the Backend folder in Travel Map directory, create a .env file, and copy the content of the .env.example file into your .env file.
+
 b. In your command line enter ``` npm install ``` to install all the dependencies of backend 
 
 ## You are Ready To Go
