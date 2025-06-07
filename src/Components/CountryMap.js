@@ -16,7 +16,7 @@ const geoUrl = '/us-states.json';
 
   const fetchVisitedStates = async () => {
     try {
-      const response = await fetch(`http://localhost:8001/api/visited-states/${user.email}`);
+      const response = await fetch(`http://localhost:8010/api/visited-states/${user.email}`);
       if (response.ok) {
         const data = await response.json();
         setVisitedStates(data.states || []);
@@ -47,7 +47,7 @@ const geoUrl = '/us-states.json';
   const handleSave = async () => {
     try {
       setLoading(true);
-     const response = await fetch('http://localhost:8001/api/visited-states', {
+     const response = await fetch('http://localhost:8010/api/visited-states', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -28,7 +28,7 @@ services:
       - /app/node_modules
     networks:
       - travel-map-network
-    command: ["sh", "-c", "./entrypoint.sh"]  
+
 
   frontend:
     build: .
