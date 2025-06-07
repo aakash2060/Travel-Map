@@ -16,8 +16,9 @@ function WorldMap({ onCountryClick }) {
                   const countryName = geo.properties.NAME || geo.properties.name;
                   if (countryName === "United States of America" || countryName === "United States") {
                     onCountryClick('USA');
-                  } else {
-                    alert(`${countryName} map not available yet. Only USA is currently supported.`);
+                  } 
+                  else {
+                    alert(`${countryName} map not available yet.`);
                   }
                 }}
                 style={{

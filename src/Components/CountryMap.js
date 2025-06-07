@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
 
-const geoUrl = "/us-states.json";
-
 function CountryMap({ country, user, onBack }) {
   const [visitedStates, setVisitedStates] = useState([]);
   const [tempVisitedStates, setTempVisitedStates] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
+
+
+const geoUrl = '/us-states.json'; 
 
   useEffect(() => {
     fetchVisitedStates();
