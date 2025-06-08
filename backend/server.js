@@ -3,7 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const { initializeDatabase } = require('./database');
 const userRoutes = require('./routes/users');
-const stateRoutes = require('./routes/states');
+const mapRoutes = require('./routes/maps');
+
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -14,7 +15,7 @@ app.use(express.json());
 
 // Routes
 app.use('/api', userRoutes);
-app.use('/api', stateRoutes);
+app.use('/api', mapRoutes);
 
 // Initialize database and start server
 initializeDatabase().then(() => {
