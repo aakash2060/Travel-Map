@@ -64,7 +64,7 @@ function ProfileIcon({ user, onLogout, onProfileClick }) {
           height: '40px',
           borderRadius: '50%',
           background: '#000080',
-          border: '2px solid rgba(255,255,255,0.3)',
+          border: '2px solid rgba(255,255,255)',
           color: 'white',
           fontSize: '16px',
           fontWeight: 'bold',

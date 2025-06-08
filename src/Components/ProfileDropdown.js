@@ -119,7 +119,7 @@ function ProfileDropdown({ user, onLogout, onProfileClick, onClose, isOpen }) {
               e.target.style.backgroundColor = 'transparent';
             }}
           >
-            <span>🚪</span>
+            <span>🔒</span>
             Logout
           </button>
         </div>
