@@ -23,3 +23,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 package-lock.json
+
+#for aws cdk
+.aws/cdk.out/
+.aws/node_modules/
+.aws/.env
+.aws/*.log
