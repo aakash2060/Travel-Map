@@ -170,7 +170,7 @@ function MapsList({ user, country, onMapSelect, onBack }) {
           ← Back to World Map
         </button>
         
-        <h2>{country} Travel Maps ({maps.length})</h2>
+        <h2>My {country} Maps ({maps.length})</h2>
         
         <button 
           onClick={() => setShowAddModal(true)}

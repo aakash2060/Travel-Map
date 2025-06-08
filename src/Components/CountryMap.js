@@ -8,8 +8,7 @@ function CountryMap({ country, user,map, onBack }) {
   const [loading, setLoading] = useState(false);
   const [customTitle, setCustomTitle] = useState(`${country} Travel Map`);
   const [tempTitle, setTempTitle] = useState(`${country} Travel Map`);
-
-
+  const [tooltip, setTooltip] = useState({ show: false, x: 0, y: 0, content: '' });
 
 const geoUrl = '/us-states.json'; 
 
@@ -176,6 +175,24 @@ const geoUrl = '/us-states.json';
                     key={geo.rsmKey}
                     geography={geo}
                     onClick={() => handleStateClick(geo)}
+                    onMouseEnter={(event) => {
+    setTooltip({
+      show: true,
+      x: event.clientX,
+      y: event.clientY,
+      content: geo.properties.name
+    });
+  }}
+  onMouseMove={(event) => {
+    setTooltip(prev => ({
+      ...prev,
+      x: event.clientX,
+      y: event.clientY
+    }));
+  }}
+  onMouseLeave={() => {
+    setTooltip({ show: false, x: 0, y: 0, content: '' });
+  }}
                     style={{
                       default: {
                         fill: isVisited ? "#4CAF50" : "#D6D6DA",
@@ -237,6 +254,26 @@ const geoUrl = '/us-states.json';
           </div>
         </div>
       </div>
+      {/* Add this right before the final closing </div> */}
+{tooltip.show && (
+  <div
+    style={{
+      position: 'fixed',
+      left: tooltip.x + 10,
+      top: tooltip.y - 30,
+      background: 'rgba(0, 0, 0, 0.8)',
+      color: 'white',
+      padding: '6px 10px',
+      borderRadius: '4px',
+      fontSize: '14px',
+      pointerEvents: 'none',
+      zIndex: 1000,
+      whiteSpace: 'nowrap'
+    }}
+  >
+    {tooltip.content}
+  </div>
+)}
     </div>
   );
 }
