@@ -43,7 +43,7 @@ const LandingPage = forwardRef(({ user, onAuthClick }, ref) => {
   };
 
   return (
-    <div style={{ maxWidth: '100vh', margin: '0 auto', padding: '5px 20px' }}>
+    <div style={{ maxWidth: '100vh', margin: '0 auto', padding: '0 20px' }}>
       <div style={{ marginTop: '40px', overflow: 'hidden' }}>
       {currentView === 'world' && (
           <>
