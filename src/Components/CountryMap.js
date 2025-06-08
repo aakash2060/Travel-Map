@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
 
-function CountryMap({ country, user, onBack }) {
+function CountryMap({ country, user,map, onBack }) {
   const [visitedStates, setVisitedStates] = useState([]);
   const [tempVisitedStates, setTempVisitedStates] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
@@ -14,9 +14,14 @@ function CountryMap({ country, user, onBack }) {
 const geoUrl = '/us-states.json'; 
 
   useEffect(() => {
-    fetchVisitedStates();
-  }, []);
+    if (map) {
+      // Load data from the specific map
+      setVisitedStates(map.states || []);
+      setCustomTitle(map.mapTitle || `${country} Travel Map`);
+    }
+  }, [map, country]);
 
+  
   const fetchVisitedStates = async () => {
     try {
       const response = await fetch(`http://localhost:8010/api/visited-states/${user.email}`);
@@ -55,24 +60,28 @@ const geoUrl = '/us-states.json';
   const handleSave = async () => {
     try {
       setLoading(true);
-     const response = await fetch('http://localhost:8010/api/visited-states', {
-        method: 'POST',
+      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8010';
+      
+      const response = await fetch(`${apiUrl}/api/map/${user.uid}/${map.mapId}`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: user.email,
           states: tempVisitedStates,
-            customTitle: tempTitle
+          mapTitle: tempTitle
         })
       });
+
        if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
       
       const data = await response.json();
-      console.log('States saved successfully:', data);
+      console.log('Map saved successfully:', data);
+
       setVisitedStates(tempVisitedStates);
       setCustomTitle(tempTitle);
       setIsEditing(false);
+
     } catch (error) {
       console.error('Error saving states:', error);
       alert('Failed to save states. Please try again.'+ error.message);
@@ -97,7 +106,7 @@ const geoUrl = '/us-states.json';
           onClick={onBack}
           style={{ padding: '10px 20px', background: '#6c757d', color: 'white', border: 'none', cursor: 'pointer', borderRadius: '4px' }}
         >
-          ← Back to World Map
+          ← Back to Maps List
         </button>
         
         {isEditing ? (
@@ -151,7 +160,7 @@ const geoUrl = '/us-states.json';
       
       {isEditing && (
         <p style={{ textAlign: 'center', color: '#007bff', marginBottom: '10px' }}>
-          Click on states to mark/unmark them as visited
+          Click on states to mark/unmark them as visited. Edit the title above to customize your map name.
         </p>
       )}
       
