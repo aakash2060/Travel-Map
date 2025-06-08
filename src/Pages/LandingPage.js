@@ -1,7 +1,7 @@
 import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import WorldMap from '../Components/WorldMap';
-import CountryMap from '../Components/CountryMap';
-import MapsList from '../Components/MapList';
+import CountryMap from './CountryMapPage';
+import MapsList from './MapListPage';
 
 const LandingPage = forwardRef(({ user, onAuthClick }, ref) => {
   const [selectedCountry, setSelectedCountry] = useState(null);

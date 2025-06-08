@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import AddMapModal from './AddMapModal';
+import AddMapModal from '../Components/AddMapModal';
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
-import LandingPage from '../Pages/LandingPage';
+import LandingPage from './LandingPage';
 
 function MapsList({ user, country, onMapSelect, onBack }) {
 

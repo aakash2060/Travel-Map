@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import AuthPage from './Pages/AuthPage';
 import LandingPage from './Pages/LandingPage';
 import Navbar from './Components/Navbar';
+import ProfilePage from './Pages/ProfilePage';
 
 function App() {
   const [user, setUser] = useState(null);
   const [currentPage, setCurrentPage] = useState('home');
+  const landingPageRef = useRef();
+
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
@@ -37,6 +40,20 @@ function App() {
     setCurrentPage('auth');
   };
 
+   const handleProfileClick = () => {
+    setCurrentPage('profile');
+  };
+
+  const handleUpdateUser = (updatedUser) => {
+    setUser(updatedUser);
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+  };
+
+  const handleBackFromProfile = () => {
+    setCurrentPage('home');
+  };
+
+
   return (
     <div>
       <Navbar 
@@ -45,12 +62,27 @@ function App() {
         onAuthClick={handleAuthClick}
         onLogout={handleLogout}
         onLoginSuccess={handleLoginSuccess}
+         onProfileClick={handleProfileClick}
       />
       <div>
-        {currentPage === 'home' ? (
-          <LandingPage user={user} onAuthClick={handleAuthClick} />
-        ) : (
+        {currentPage === 'home' && (
+          <LandingPage 
+            ref={landingPageRef}
+            user={user} 
+            onAuthClick={handleAuthClick} 
+          />
+        )}
+        
+        {currentPage === 'auth' && (
           <AuthPage onLoginSuccess={handleLoginSuccess} />
+        )}
+        
+        {currentPage === 'profile' && user && (
+          <ProfilePage 
+            user={user}
+            onUpdateUser={handleUpdateUser}
+            onBack={handleBackFromProfile}
+          />
         )}
       </div>
     </div>

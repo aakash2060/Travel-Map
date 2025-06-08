@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
-import LandingPage from '../Pages/LandingPage';
+import LandingPage from './LandingPage';
 
 function CountryMap({ country, user,map, onBack }) {
   const [visitedStates, setVisitedStates] = useState([]);

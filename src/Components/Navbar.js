@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import ProfileIcon from './ProfileIcon';
 
-function Navbar({ user, onHomeClick, onAuthClick, onLogout, onLoginSuccess }) {
+function Navbar({ user, onHomeClick, onAuthClick, onLogout, onLoginSuccess, onProfileClick }) {
   const [formData, setFormData] = useState({ email: '', password: '', name: '' });
   const [isLoading, setIsLoading] = useState(false);
   const [isSignupMode, setIsSignupMode] = useState(false);
@@ -83,20 +84,12 @@ function Navbar({ user, onHomeClick, onAuthClick, onLogout, onLoginSuccess }) {
         {user ? (
           <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
             <span>Welcome, {user.name}</span>
-            <button
-              onClick={onLogout}
-              style={{
-                background: '#000080',
-                border: 'none',
-                color: 'white',
-                padding: '8px 16px',
-                borderRadius: '4px',
-                cursor: 'pointer'
-              }}
-            >
-              Logout
-            </button>
-          </div>
+<ProfileIcon 
+            user={user}
+            onLogout={onLogout}
+            onProfileClick={onProfileClick}
+          />
+            </div>
         ) : (
           <form onSubmit={handleNavSubmit} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             {isSignupMode && (
