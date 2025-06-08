@@ -20,7 +20,6 @@ const LandingPage = forwardRef(({ user, onAuthClick }, ref) => {
   const handleCountryClick = (country) => {
     if (!user) {
       alert('Please login to explore country maps!');
-      onAuthClick();
       return;
     }
     setSelectedCountry(country);
@@ -44,8 +43,8 @@ const LandingPage = forwardRef(({ user, onAuthClick }, ref) => {
   };
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '50px auto', padding: '20px' }}>
-      <div style={{ marginTop: '40px' }}>
+    <div style={{ maxWidth: '100vh', margin: '0 auto', padding: '5px 20px' }}>
+      <div style={{ marginTop: '40px', overflow: 'hidden' }}>
       {currentView === 'world' && (
           <>
             <h2>{user ? 'My Travel Maps' : 'Travel Map Explorer'}</h2>

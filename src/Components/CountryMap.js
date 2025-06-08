@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
+import LandingPage from '../Pages/LandingPage';
 
 function CountryMap({ country, user,map, onBack }) {
   const [visitedStates, setVisitedStates] = useState([]);
@@ -20,21 +21,6 @@ const geoUrl = '/us-states.json';
     }
   }, [map, country]);
 
-  
-  const fetchVisitedStates = async () => {
-    try {
-      const response = await fetch(`http://localhost:8010/api/visited-states/${user.email}`);
-      if (response.ok) {
-        const data = await response.json();
-        setVisitedStates(data.states || []);
-         if (data.customTitle) {
-          setCustomTitle(data.customTitle);
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching states:', error);
-    }
-  };
 
   const handleStateClick = (geo) => {
     if (!isEditing) return;
@@ -95,6 +81,12 @@ const geoUrl = '/us-states.json';
     setTempTitle(customTitle); 
 
   };
+
+   if (!user) {
+    return (
+<LandingPage />
+    );
+  }
 
   const currentStates = isEditing ? tempVisitedStates : visitedStates;
 

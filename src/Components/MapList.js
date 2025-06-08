@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import AddMapModal from './AddMapModal';
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
+import LandingPage from '../Pages/LandingPage';
 
 function MapsList({ user, country, onMapSelect, onBack }) {
+
   const [maps, setMaps] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -11,9 +13,10 @@ function MapsList({ user, country, onMapSelect, onBack }) {
 
   useEffect(() => {
     fetchUserMaps();
-  }, [user.uid]);
+  }, [user]);
 
   const fetchUserMaps = async () => {
+    if (!user || !user.uid) return; 
     try {
       setLoading(true);
       const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8010';
@@ -31,6 +34,13 @@ function MapsList({ user, country, onMapSelect, onBack }) {
       setLoading(false);
     }
   };
+
+ // Early return AFTER all hooks
+  if (!user) {
+    return (
+        <LandingPage />
+    );
+  }
 
   const handleAddMap = async (mapTitle) => {
     try {
