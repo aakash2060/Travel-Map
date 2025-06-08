@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import AddMapModal from './AddMapModal';
+import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
 
 function MapsList({ user, country, onMapSelect, onBack }) {
   const [maps, setMaps] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
+
+    const geoUrl = '/us-states.json'; 
 
   useEffect(() => {
     fetchUserMaps();
@@ -80,6 +83,68 @@ function MapsList({ user, country, onMapSelect, onBack }) {
     }
   };
 
+
+  const MapPreview = ({ map }) => {
+    const visitedStates = map.states || [];
+    
+    return (
+      <div style={{ 
+        height: '180px', 
+        border: '1px solid #eee', 
+        borderRadius: '4px', 
+        overflow: 'hidden',
+        background: '#f8f9fa',
+        marginBottom: '15px'
+      }}>
+        <ComposableMap 
+          projection="geoAlbersUsa"
+          style={{ width: '100%', height: '100%' }}
+        >
+          <Geographies geography={geoUrl}>
+            {({ geographies }) =>
+              geographies.map((geo) => {
+                const isVisited = visitedStates.includes(geo.properties.name);
+                
+                return (
+                  <Geography
+                    key={geo.rsmKey}
+                    geography={geo}
+                    style={{
+                      default: {
+                        fill: isVisited ? "#4CAF50" : "#E0E0E0",
+                        stroke: "#FFFFFF",
+                        strokeWidth: 0.5,
+                        outline: "none"
+                      },
+                      hover: {
+                        fill: isVisited ? "#4CAF50" : "#E0E0E0",
+                        stroke: "#FFFFFF",
+                        strokeWidth: 0.5,
+                        outline: "none"
+                      }
+                    }}
+                  />
+                );
+              })
+            }
+          </Geographies>
+        </ComposableMap>
+        
+        <div style={{
+          position: 'relative',
+          top: '-40px',
+          background: 'rgba(0,0,0,0.7)',
+          color: 'white',
+          padding: '5px 10px',
+          fontSize: '12px',
+          textAlign: 'center'
+        }}>
+          {visitedStates.length}/50 states • {((visitedStates.length / 50) * 100).toFixed(0)}% complete
+        </div>
+      </div>
+    );
+  };
+
   if (loading) {
     return (
       <div style={{ maxWidth: '1200px', margin: '50px auto', padding: '20px', textAlign: 'center' }}>
@@ -114,7 +179,6 @@ function MapsList({ user, country, onMapSelect, onBack }) {
             background: '#28a745', 
             color: 'white', 
             border: 'none', 
-            cursor: 'pointer', 
             borderRadius: '4px',
             fontSize: '16px',
             fontWeight: 'bold'
@@ -154,58 +218,105 @@ function MapsList({ user, country, onMapSelect, onBack }) {
             <div 
               key={map.mapId} 
               style={{ 
-                border: '1px solid #ddd', 
-                borderRadius: '8px', 
+               borderRadius: '12px', 
                 padding: '20px', 
                 background: 'white',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+                boxShadow: '0 4px 6px rgba(0,0,0,0.07)',
+                transition: 'all 0.3s ease',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.transform = 'translateY(-4px)';
                 e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.15)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
-              }}
-            >
-              <h3 style={{ margin: '0 0 10px 0', color: '#333' }}>{map.mapTitle}</h3>
-              <p style={{ color: '#666', margin: '0 0 15px 0' }}>
-                {map.states ? map.states.length : 0} states visited
-              </p>
-              <p style={{ color: '#999', fontSize: '12px', margin: '0 0 20px 0' }}>
-                Created: {new Date(map.createdAt).toLocaleDateString()}
-              </p>
+                e.currentTarget.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+              }}>
+
+                {/* Map Preview */}
+              <MapPreview map={map} />
               
-              <div style={{ display: 'flex', gap: '10px' }}>
-                <button 
-                  onClick={() => onMapSelect(map)}
-                  style={{ 
-                    flex: 1,
-                    padding: '10px', 
-                    background: '#007bff', 
-                    color: 'white', 
-                    border: 'none', 
-                    cursor: 'pointer', 
-                    borderRadius: '4px' 
-                  }}
-                >
-                  Open Map
-                </button>
-                <button 
-                  onClick={() => handleDeleteMap(map.mapId)}
-                  style={{ 
-                    padding: '10px 15px', 
-                    background: '#dc3545', 
-                    color: 'white', 
-                    border: 'none', 
-                    cursor: 'pointer', 
-                    borderRadius: '4px' 
-                  }}
-                >
-                  🗑️
-                </button>
+              {/* Map Info */}
+              <div style={{ paddingTop: '10px' }}>
+                <h3 style={{ 
+                  margin: '0 0 8px 0', 
+                  color: '#333',
+                  fontSize: '18px',
+                  fontWeight: '600'
+                }}>
+                  {map.mapTitle}
+                </h3>
+                
+                <div style={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between', 
+                  alignItems: 'center',
+                  marginBottom: '15px'
+                }}>
+                  <span style={{ color: '#666', fontSize: '14px' }}>
+                    {map.states ? map.states.length : 0} states visited
+                  </span>
+                  <span style={{ color: '#999', fontSize: '12px' }}>
+                    {new Date(map.createdAt).toLocaleDateString()}
+                  </span>
+                </div>
+                
+                {/* Progress Bar */}
+                <div style={{ 
+                  background: '#f0f0f0', 
+                  height: '6px', 
+                  borderRadius: '3px', 
+                  overflow: 'hidden',
+                  marginBottom: '15px'
+                }}>
+                  <div 
+                    style={{ 
+                      width: `${((map.states?.length || 0) / 50) * 100}%`, 
+                      height: '100%', 
+                      background: '#4CAF50',
+                      transition: 'width 0.3s ease'
+                    }}
+                  />
+                </div>
+                
+                {/* Action Buttons */}
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <button 
+                    onClick={(e) => {
+                      onMapSelect(map);
+                    }}
+                    style={{ 
+                      flex: 1,
+                      padding: '10px', 
+                      background: '#007bff', 
+                      color: 'white', 
+                      border: 'none', 
+                      cursor: 'pointer', 
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      fontWeight: '500'
+                    }}
+                  >
+                    Open Map
+                  </button>
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation(); 
+                      handleDeleteMap(map.mapId);
+                    }}
+                    style={{ 
+                      padding: '10px 15px', 
+                      background: '#dc3545', 
+                      color: 'white', 
+                      border: 'none', 
+                      cursor: 'pointer', 
+                      borderRadius: '6px',
+                      fontSize: '14px'
+                    }}
+                  >
+                    🗑️
+                  </button>
+                </div>
               </div>
             </div>
           ))}
