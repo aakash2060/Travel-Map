@@ -13,7 +13,8 @@ router.get('/visited-states/:email', async (req, res) => {
       Key: { email }
     }).promise();
     
-    res.json({ states: result.Item ? result.Item.states : [] });
+    res.json({ states: result.Item ? result.Item.states : [],   customTitle: result.Item ? result.Item.customTitle : null
+ });
   } catch (err) {
     res.status(500).json({ message: 'Error fetching states' });
   }
@@ -30,6 +31,7 @@ router.post('/visited-states', async (req, res) => {
       Item: { 
         email, 
         states,
+          customTitle: req.body.customTitle,
         updatedAt: new Date().toISOString()
       }
     }).promise();

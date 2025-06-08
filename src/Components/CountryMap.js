@@ -6,6 +6,9 @@ function CountryMap({ country, user, onBack }) {
   const [tempVisitedStates, setTempVisitedStates] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [customTitle, setCustomTitle] = useState(`${country} Travel Map`);
+  const [tempTitle, setTempTitle] = useState(`${country} Travel Map`);
+
 
 
 const geoUrl = '/us-states.json'; 
@@ -20,6 +23,9 @@ const geoUrl = '/us-states.json';
       if (response.ok) {
         const data = await response.json();
         setVisitedStates(data.states || []);
+         if (data.customTitle) {
+          setCustomTitle(data.customTitle);
+        }
       }
     } catch (error) {
       console.error('Error fetching states:', error);
@@ -42,6 +48,8 @@ const geoUrl = '/us-states.json';
   const handleEdit = () => {
     setIsEditing(true);
     setTempVisitedStates([...visitedStates]);
+    setTempTitle(customTitle);
+
   };
 
   const handleSave = async () => {
@@ -52,7 +60,8 @@ const geoUrl = '/us-states.json';
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: user.email,
-          states: tempVisitedStates
+          states: tempVisitedStates,
+            customTitle: tempTitle
         })
       });
        if (!response.ok) {
@@ -62,6 +71,7 @@ const geoUrl = '/us-states.json';
       const data = await response.json();
       console.log('States saved successfully:', data);
       setVisitedStates(tempVisitedStates);
+      setCustomTitle(tempTitle);
       setIsEditing(false);
     } catch (error) {
       console.error('Error saving states:', error);
@@ -74,6 +84,8 @@ const geoUrl = '/us-states.json';
   const handleCancel = () => {
     setIsEditing(false);
     setTempVisitedStates([]);
+    setTempTitle(customTitle); 
+
   };
 
   const currentStates = isEditing ? tempVisitedStates : visitedStates;
@@ -88,8 +100,27 @@ const geoUrl = '/us-states.json';
           ← Back to World Map
         </button>
         
-        <h2>{country} Travel Map</h2>
-        
+        {isEditing ? (
+          <input
+            type="text"
+            value={tempTitle}
+            onChange={(e) => setTempTitle(e.target.value)}
+            style={{
+              fontSize: '24px',
+              fontWeight: 'bold',
+              textAlign: 'center',
+              border: '2px solid #007bff',
+              borderRadius: '4px',
+              padding: '8px 12px',
+              background: '#f8f9fa',
+              minWidth: '300px'
+            }}
+            placeholder="Enter custom title..."
+          />
+        ) : (
+          <h2>{customTitle}</h2>
+        )}
+
         <div>
           {!isEditing ? (
             <button 
