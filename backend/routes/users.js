@@ -7,7 +7,6 @@ router.post('/register', async (req, res) => {
       console.log('Registration request received:', req.body);
   const { email, password, name } = req.body;
   
-//check if email already exists
   try {
     console.log('Checking if email exists:', email);
 
@@ -28,7 +27,6 @@ const existingUser = await docClient.query({
       return res.status(409).json({ message: 'User with this email already exists' });
     }
 
-    // auto generate uid
     const uid = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         console.log('Generated UID:', uid);
 

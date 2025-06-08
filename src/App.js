@@ -7,12 +7,7 @@ function App() {
   const [user, setUser] = useState(null);
   const [currentPage, setCurrentPage] = useState('home');
 
-  // Debug: Log state changes
-  console.log('Current page:', currentPage);
-  console.log('User:', user);
-
   useEffect(() => {
-    // Check if user is already logged in
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
       setUser(JSON.parse(savedUser));

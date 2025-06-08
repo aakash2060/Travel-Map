@@ -28,7 +28,6 @@ function AddMapModal({ onAddMap, onClose }) {
     }
   };
 
-  // Suggested map titles
   const suggestions = [
     "Places I've Eaten Amazing Food",
     "States I Want to Visit This Year",

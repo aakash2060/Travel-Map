@@ -3,7 +3,6 @@ const { docClient } = require('../database');
 
 const router = express.Router();
 
-// Get all maps for a user
 router.get('/user-maps/:uid', async (req, res) => {
   const { uid } = req.params;
   
@@ -23,7 +22,6 @@ router.get('/user-maps/:uid', async (req, res) => {
   }
 });
 
-// Get specific map data
 router.get('/map/:uid/:mapId', async (req, res) => {
   const { uid, mapId } = req.params;
   
@@ -48,7 +46,6 @@ router.get('/map/:uid/:mapId', async (req, res) => {
   }
 });
 
-// Create new map
 router.post('/user-maps', async (req, res) => {
   const { uid, mapTitle } = req.body;
   
@@ -57,7 +54,6 @@ router.post('/user-maps', async (req, res) => {
   }
   
   try {
-    // Generate map ID using timestamp + random
     const mapId = `map_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     
     await docClient.put({
@@ -84,7 +80,6 @@ router.post('/user-maps', async (req, res) => {
   }
 });
 
-// Update map (states and/or title)
 router.put('/map/:uid/:mapId', async (req, res) => {
   const { uid, mapId } = req.params;
   const { states, mapTitle } = req.body;
@@ -124,7 +119,6 @@ router.put('/map/:uid/:mapId', async (req, res) => {
   }
 });
 
-// Delete map
 router.delete('/map/:uid/:mapId', async (req, res) => {
   const { uid, mapId } = req.params;
   
