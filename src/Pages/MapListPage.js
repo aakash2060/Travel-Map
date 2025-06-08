@@ -140,7 +140,7 @@ function MapsList({ user, country, onMapSelect, onBack }) {
           </Geographies>
         </ComposableMap>
         
-        <div style={{
+        {/* <div style={{
           position: 'relative',
           top: '-40px',
           background: 'rgba(0,0,0,0.7)',
@@ -150,7 +150,7 @@ function MapsList({ user, country, onMapSelect, onBack }) {
           textAlign: 'center'
         }}>
           {visitedStates.length}/50 states • {((visitedStates.length / 50) * 100).toFixed(0)}% complete
-        </div>
+        </div> */}
       </div>
     );
   };
@@ -191,7 +191,8 @@ function MapsList({ user, country, onMapSelect, onBack }) {
             border: 'none', 
             borderRadius: '4px',
             fontSize: '16px',
-            fontWeight: 'bold'
+            fontWeight: 'bold',
+            cursor: 'pointer',
           }}
         >
           + Add New Map
@@ -264,7 +265,7 @@ function MapsList({ user, country, onMapSelect, onBack }) {
                   marginBottom: '15px'
                 }}>
                   <span style={{ color: '#666', fontSize: '14px' }}>
-                    {map.states ? map.states.length : 0} states visited
+                    {map.states ? map.states.length : 0} states 
                   </span>
                   <span style={{ color: '#999', fontSize: '12px' }}>
                     {new Date(map.createdAt).toLocaleDateString()}
