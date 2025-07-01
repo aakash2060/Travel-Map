@@ -1,19 +1,17 @@
-# Use minimal Node image
-# might have to use an ECR public image if we run into rate limit from Dockerhub
-# FROM public.ecr.aws/docker/library/node:18-alpine
 FROM node:18-alpine
 
-# Create app directory
 WORKDIR /app
 
-# Copy and install dependencies
+# Copy package files
 COPY package*.json ./
-RUN npm ci
 
-# Copy remaining files
+# Install dependencies including nodemon
+RUN npm install
+RUN npm install -g nodemon
+
+# Copy the rest of the application
 COPY . .
 
 EXPOSE 8001
 
-# Run the server
-CMD ["node", "server.js"]
+CMD ["npm", "run", "dev"]
