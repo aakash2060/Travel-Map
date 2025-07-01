@@ -12,7 +12,9 @@ function AuthPage({onLoginSuccess }) {
     e.preventDefault();
     
     const endpoint = isLogin ? '/api/login' : '/api/register';
-    const response = await fetch(`http://localhost:8001${endpoint}`, {
+    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8010';
+
+    const response = await fetch(`${apiUrl}${endpoint}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData)

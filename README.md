@@ -1,23 +1,12 @@
 # Getting Started with Travel Map App
 
-1> First clone the app to a directory
-2> For frontend:  Go inside Travel Map directory and in command line enter this command to install all the dependencies: ``` npm install --legacy-peer-deps ```
-3> For Backend: 
-a. Go inside the Backend folder in Travel Map directory, add .env file with following key value pairs:
-```
-DYNAMODB_ENDPOINT=http://localhost:8000
-DYNAMODB_REGION=local
-AWS_ACCESS_KEY_ID=dummy
-AWS_SECRET_ACCESS_KEY=dummy
-```
-b. In your command line enter ``` npm install ``` to install all the dependencies of backend 
+1. First clone the app to a directory  
+2. Install Docker Desktop in your computer: https://docs.docker.com/desktop/setup/install/windows-install/  
+3. Go inside the Backend folder in Travel Map directory, create a .env file, and copy the content of the .env.example file into your .env file.  
 
-## You are Ready To Go
 
-To start the project:
+## You are Ready To Go  
 
- open three terminals, one for react, one for backend (express) and one for dynamodb local
- 1. To run React app Go to Travel-Map directory on your command line and enter ```npm start```.
- 2. To run Express app in another terminal, Go inside backend folder on you terminal and enter ```node server.js```.
- 3. To run dynamodb local database, in another terminal, Go to Travel-Map directory and on enter ```docker run -p 8000:8000 amazon/dynamodb-local``` on your terminal.
- 4. open your localhost:3000 port on web browser to view the app. 
+To start the project:  
+
+Go to the root of your Project Directory on your CLI and enter ```docker compose up ```
