@@ -16,7 +16,10 @@ function MapsList({ user, country, onMapSelect, onBack }) {
   }, [user]);
 
   const fetchUserMaps = async () => {
-    if (!user || !user.uid) return; 
+    if (!user || !user.uid){
+        setLoading(false);  
+        return;
+    }
     try {
       setLoading(true);
       const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8010';
