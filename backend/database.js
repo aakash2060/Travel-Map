@@ -40,6 +40,7 @@ const waitForDynamoDB = async () => {
       return true;
     } catch (err) {
       console.log(`Waiting for DynamoDB... (${retries} retries left)`);
+      console.error("DynamoDB error:", err);
       retries--;
       await new Promise((resolve) => setTimeout(resolve, 2000));
     }
