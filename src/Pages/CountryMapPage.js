@@ -1,29 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
+import LandingPage from './LandingPage';
 
-const geoUrl = "/us-states.json";
-
-function CountryMap({ country, user, onBack }) {
+function CountryMap({ country, user,map, onBack }) {
   const [visitedStates, setVisitedStates] = useState([]);
   const [tempVisitedStates, setTempVisitedStates] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [customTitle, setCustomTitle] = useState(`${country} Travel Map`);
+  const [tempTitle, setTempTitle] = useState(`${country} Travel Map`);
+  const [tooltip, setTooltip] = useState({ show: false, x: 0, y: 0, content: '' });
+
+const geoUrl = '/us-states.json'; 
 
   useEffect(() => {
-    fetchVisitedStates();
-  }, []);
-
-  const fetchVisitedStates = async () => {
-    try {
-      const response = await fetch(`http://localhost:8001/api/visited-states/${user.email}`);
-      if (response.ok) {
-        const data = await response.json();
-        setVisitedStates(data.states || []);
-      }
-    } catch (error) {
-      console.error('Error fetching states:', error);
+    if (map) {
+      // Load data from the specific map
+      setVisitedStates(map.states || []);
+      setCustomTitle(map.mapTitle || `${country} Travel Map`);
     }
-  };
+  }, [map, country]);
+
 
   const handleStateClick = (geo) => {
     if (!isEditing) return;
@@ -41,27 +38,35 @@ function CountryMap({ country, user, onBack }) {
   const handleEdit = () => {
     setIsEditing(true);
     setTempVisitedStates([...visitedStates]);
+    setTempTitle(customTitle);
+
   };
 
   const handleSave = async () => {
     try {
       setLoading(true);
-     const response = await fetch('http://localhost:8001/api/visited-states', {
-        method: 'POST',
+      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8010';
+      
+      const response = await fetch(`${apiUrl}/api/map/${user.uid}/${map.mapId}`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: user.email,
-          states: tempVisitedStates
+          states: tempVisitedStates,
+          mapTitle: tempTitle
         })
       });
+
        if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
       
       const data = await response.json();
-      console.log('States saved successfully:', data);
+      console.log('Map saved successfully:', data);
+
       setVisitedStates(tempVisitedStates);
+      setCustomTitle(tempTitle);
       setIsEditing(false);
+
     } catch (error) {
       console.error('Error saving states:', error);
       alert('Failed to save states. Please try again.'+ error.message);
@@ -73,7 +78,15 @@ function CountryMap({ country, user, onBack }) {
   const handleCancel = () => {
     setIsEditing(false);
     setTempVisitedStates([]);
+    setTempTitle(customTitle); 
+
   };
+
+   if (!user) {
+    return (
+<LandingPage />
+    );
+  }
 
   const currentStates = isEditing ? tempVisitedStates : visitedStates;
 
@@ -84,11 +97,30 @@ function CountryMap({ country, user, onBack }) {
           onClick={onBack}
           style={{ padding: '10px 20px', background: '#6c757d', color: 'white', border: 'none', cursor: 'pointer', borderRadius: '4px' }}
         >
-          ← Back to World Map
+          ← Back to Maps List
         </button>
         
-        <h2>{country} Travel Map</h2>
-        
+        {isEditing ? (
+          <input
+            type="text"
+            value={tempTitle}
+            onChange={(e) => setTempTitle(e.target.value)}
+            style={{
+              fontSize: '24px',
+              fontWeight: 'bold',
+              textAlign: 'center',
+              border: '2px solid #007bff',
+              borderRadius: '4px',
+              padding: '8px 12px',
+              background: '#f8f9fa',
+              minWidth: '300px'
+            }}
+            placeholder="Enter custom title..."
+          />
+        ) : (
+          <h2>{customTitle}</h2>
+        )}
+
         <div>
           {!isEditing ? (
             <button 
@@ -119,7 +151,7 @@ function CountryMap({ country, user, onBack }) {
       
       {isEditing && (
         <p style={{ textAlign: 'center', color: '#007bff', marginBottom: '10px' }}>
-          Click on states to mark/unmark them as visited
+          Click on states to mark/unmark them as visited. Edit the title above to customize your map name.
         </p>
       )}
       
@@ -135,6 +167,24 @@ function CountryMap({ country, user, onBack }) {
                     key={geo.rsmKey}
                     geography={geo}
                     onClick={() => handleStateClick(geo)}
+                    onMouseEnter={(event) => {
+    setTooltip({
+      show: true,
+      x: event.clientX,
+      y: event.clientY,
+      content: geo.properties.name
+    });
+  }}
+  onMouseMove={(event) => {
+    setTooltip(prev => ({
+      ...prev,
+      x: event.clientX,
+      y: event.clientY
+    }));
+  }}
+  onMouseLeave={() => {
+    setTooltip({ show: false, x: 0, y: 0, content: '' });
+  }}
                     style={{
                       default: {
                         fill: isVisited ? "#4CAF50" : "#D6D6DA",
@@ -196,6 +246,26 @@ function CountryMap({ country, user, onBack }) {
           </div>
         </div>
       </div>
+      {/* Add this right before the final closing </div> */}
+{tooltip.show && (
+  <div
+    style={{
+      position: 'fixed',
+      left: tooltip.x + 10,
+      top: tooltip.y - 30,
+      background: 'rgba(0, 0, 0, 0.8)',
+      color: 'white',
+      padding: '6px 10px',
+      borderRadius: '4px',
+      fontSize: '14px',
+      pointerEvents: 'none',
+      zIndex: 1000,
+      whiteSpace: 'nowrap'
+    }}
+  >
+    {tooltip.content}
+  </div>
+)}
     </div>
   );
 }

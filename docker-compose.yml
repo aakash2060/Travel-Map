@@ -1,0 +1,56 @@
+services:
+  dynamodb:
+    image: amazon/dynamodb-local
+    container_name: travel-map-dynamodb
+    ports:
+      - "8000:8000"
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath /data"
+    volumes:
+      - ./dynamodb-data:/data
+    networks:
+      - travel-map-network
+    healthcheck:
+      disable: true
+
+  backend:
+    build: ./backend
+    container_name: travel-map-backend
+    ports:
+      - "8010:8000"  # changed to avoid conflict with DynamoDB
+    environment:
+      - DYNAMODB_ENDPOINT=http://dynamodb:8000
+      - DYNAMODB_REGION=local
+      - AWS_ACCESS_KEY_ID=dummy
+      - AWS_SECRET_ACCESS_KEY=dummy
+      - NODE_ENV=development
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    networks:
+      - travel-map-network
+
+
+  frontend:
+    build: .
+    container_name: travel-map-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    environment:
+      - WATCHPACK_POLLING=true
+      - REACT_APP_API_URL=http://localhost:8010
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - travel-map-network
+    stdin_open: true
+    tty: true
+
+networks:
+  travel-map-network:
+    driver: bridge
+
+volumes:
+  dynamodb-data:
