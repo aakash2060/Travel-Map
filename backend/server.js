@@ -13,14 +13,14 @@ const PORT = process.env.PORT || 8001;
 app.use(cors());
 app.use(express.json());
 
-// Routes
-app.use('/api', userRoutes);
-app.use('/api', mapRoutes);
-
 // Health check route
 app.get('/', (req, res) => {
   res.json({ status: 'ok', message: 'Travel API is running' });
 });
+
+// Routes
+app.use('/api', userRoutes);
+app.use('/api', mapRoutes);
 
 // Initialize database and start server
 initializeDatabase().then(() => {
