@@ -17,6 +17,11 @@ app.use(express.json());
 app.use('/api', userRoutes);
 app.use('/api', mapRoutes);
 
+// Health check route
+app.get('/', (req, res) => {
+  res.json({ status: 'ok', message: 'Travel API is running' });
+});
+
 // Initialize database and start server
 initializeDatabase().then(() => {
   app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));
