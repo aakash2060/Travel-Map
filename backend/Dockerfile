@@ -7,11 +7,11 @@ COPY package*.json ./
 
 # Install dependencies including nodemon
 RUN npm install
-RUN npm install -g nodemon
+#RUN npm install -g nodemon
 
 # Copy the rest of the application
 COPY . .
 
 EXPOSE 8001
-
-CMD ["npm", "run", "dev"]
+#ENTRYPOINT []
+CMD ["node", "server.js"]
